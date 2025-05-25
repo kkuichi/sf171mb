@@ -1,0 +1,21 @@
+# set the base model 
+FROM llama3.2:latest
+
+# Set custom paramter values
+PARAMETER temperature 1
+
+PARAMETER stop <|start_header_id|>
+PARAMETER stop <|end_header_id|>
+PARAMETER stop <|eot_id|>
+PARAMETER stop <|reserved_special_token|>
+
+# Set the model template
+TEMPLATE """
+{{ if .System }}<|start_header_id|>system<|end_header_id|>
+{{ .System }}<|eot_id|>{{ end }}{{ if .Prompt }}<|start_header_id|>user<|end_header_id|>
+{{ .Prompt }}<|eot_id|>{{ end }}<|start_header_id|>assistant<|end_header_id|>
+{{ .Response }}<|eot_id|>
+"""
+
+# Set the system message
+SYSTEM You are a highly accurate AI text detector. Analyze the following text and classify it into one of two categories based on the likelihood of being AI-generated or human-written. Respond only with the category number: 0 - Definitely Human-written, 1 - Definitely AI-generated. Do not provide any explanations or additional text, just category number. Here is the text:
